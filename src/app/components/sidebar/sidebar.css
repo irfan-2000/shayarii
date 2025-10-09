@@ -1,0 +1,4 @@
+/* Optional custom styles */
+aside {
+  min-height: 100vh; /* Full screen height */
+}

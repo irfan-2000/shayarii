@@ -1,0 +1,35 @@
+<div class="card w-full bg-base-100 shadow-xl p-4 relative">
+  <h2 class="text-2xl font-bold mb-4">Add Shayari</h2>
+
+  <!-- Success popup -->
+  <div
+    *ngIf="showSuccess"
+    class="absolute top-2 right-2 bg-green-500 text-white px-4 py-2 rounded shadow-lg"
+  >
+    Shayari added successfully!
+  </div>
+
+  <!-- Category dropdown -->
+  <select [(ngModel)]="selectedCategory" class="border p-2 rounded w-full mb-4">
+    <option value="" disabled>Select Category</option>
+    <option value="Love Shayari">Love Shayari</option>
+    <option value="Motivational Shayari">Motivational Shayari</option>
+    <option value="Funny Shayari">Funny Shayari</option>
+    <option value="Sad Shayari">Sad Shayari</option>
+  </select>
+
+  <!-- Content -->
+  <textarea
+    [(ngModel)]="content"
+    class="border p-2 rounded w-full mb-4"
+    placeholder="Write your shayari here"
+  ></textarea>
+
+  <!-- Add button -->
+  <button
+    class="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600 transition-colors"
+    (click)="addShayari()"
+  >
+    Add Shayari
+  </button>
+</div>
