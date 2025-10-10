@@ -7,6 +7,7 @@ export interface Shayari {
   category: string;
   content: string;
   createdBy?: string;
+  updatedBy?: string;
   createdAt?: string;
 }
 
@@ -14,9 +15,8 @@ export interface Shayari {
   providedIn: 'root'
 })
 export class shayariService {
-  private apiUrl = 'http://localhost:5200/api/shay'; // Replace with your backend URL
-
-  // For UI reactivity
+  private apiUrl = 'http://localhost:5200/api/shay';
+    
   private shayariSubject = new BehaviorSubject<Shayari[]>([]);
   shayaris$ = this.shayariSubject.asObservable();
 
@@ -24,21 +24,23 @@ export class shayariService {
     this.loadShayaris();
   }
 
-  // Load all shayaris from backend
   loadShayaris() {
     this.http.get<Shayari[]>(`${this.apiUrl}`)
       .subscribe(shayaris => this.shayariSubject.next(shayaris));
   }
 
-  // Add new shayari to backend
-  addShayari(shayari: Shayari) {
+  addShayari(shayari: Shayari): Observable<any> {
+    // Ensure updatedBy is not null
+    if (!shayari.updatedBy) {
+      shayari.updatedBy = shayari.createdBy || 'Anonymous';
+    }
+
     return this.http.post(`${this.apiUrl}/add`, shayari)
       .pipe(
-        tap(() => this.loadShayaris()) // Refresh the list after adding
-      ).subscribe();
+        tap(() => this.loadShayaris()) // Refresh list after adding
+      );
   }
 
-  // Optionally get last added shayari
   getLastShayari(): Observable<Shayari> {
     return this.http.get<Shayari>(`${this.apiUrl}/last`);
   }
