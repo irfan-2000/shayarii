@@ -1,81 +1,131 @@
-<div class="p-4 md:p-6 lg:p-8">
+<div class="p-4 min-h-screen bg-gradient-to-b from-purple-50 to-purple-100">
 
-  <!-- Username prompt if cookie not set -->
-  <div *ngIf="showNamePrompt" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
-    <div class="bg-white rounded-lg p-6 w-full max-w-sm shadow-lg">
-      <h2 class="text-lg md:text-xl font-bold mb-4 text-center">Enter Your Name</h2>
+  <!-- 🧍 Username prompt if cookie not set -->
+  <div *ngIf="showNamePrompt"
+    class="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50 animate-fadeIn">
+    <div class="bg-white rounded-2xl p-6 w-11/12 max-w-sm shadow-2xl border border-purple-200 animate-slideUp">
+      <h2 class="text-xl font-bold mb-4 text-purple-700 text-center">Enter Your Name</h2>
       <input type="text" [(ngModel)]="usernameInput" placeholder="Enter your name"
-             class="border p-2 md:p-3 rounded w-full mb-4 text-sm md:text-base">
-      <div class="flex justify-end gap-2">
-        <button class="bg-purple-500 text-white px-4 py-2 md:px-5 md:py-2 rounded hover:bg-purple-600 transition-colors text-sm md:text-base"
-                (click)="setUsername(usernameInput)">Submit</button>
+        class="border border-purple-300 focus:ring-2 focus:ring-purple-500 outline-none p-2 rounded-lg w-full mb-4">
+      <div class="flex justify-end">
+        <button class="bg-purple-600 text-white font-semibold px-5 py-2 rounded-lg hover:bg-purple-700 transition"
+          (click)="setUsername(usernameInput)">Submit</button>
       </div>
     </div>
   </div>
 
-  <!-- Header: Title, selected category, username, add button -->
-  <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-2 md:gap-0">
-    <h2 class="text-xl md:text-2xl lg:text-3xl font-bold">Shayari Board</h2>
-    <div class="flex flex-wrap items-center gap-2 md:gap-4">
-      <span *ngIf="selectedCategory !== 'All'" class="text-purple-600 font-semibold text-sm md:text-base">Category: {{ selectedCategory }}</span>
-      <span *ngIf="username" class="text-gray-500 text-sm md:text-base">User: {{ username }}</span>
-      <button class="bg-purple-500 text-white px-4 py-2 md:px-5 md:py-2 rounded hover:bg-purple-600 transition-colors text-sm md:text-base"
-              (click)="toggleAddPopup()">+ Add Shayari</button>
+  <!-- 💜 Header: Title, selected category, add button -->
+  <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-3">
+    <h2 class="text-3xl font-extrabold text-purple-700">Shayari Board</h2>
+
+    <div class="flex items-center flex-wrap gap-4">
+      <span *ngIf="selectedCategory !== 'All'" class="text-purple-600 font-semibold bg-purple-100 px-3 py-1 rounded-lg">
+        Category: {{ selectedCategory }}
+      </span>
+      <button
+        class="bg-purple-600 text-white font-semibold px-5 py-2 rounded-lg hover:bg-purple-700 active:bg-purple-800 transition-colors shadow-md"
+        (click)="toggleAddPopup()">+ Add Shayari</button>
     </div>
   </div>
 
-  <!-- Category filter -->
-  <div class="mb-4 max-w-xs">
+  <!-- 🏷️ Category filter -->
+  <div class="mb-6 max-w-xs">
     <select [(ngModel)]="selectedCategory" (change)="filterCategory(selectedCategory)"
-            class="border p-2 md:p-3 rounded w-full text-sm md:text-base">
+      class="border border-purple-300 focus:ring-2 focus:ring-purple-500 outline-none p-2 rounded-lg w-full">
       <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
     </select>
   </div>
 
-  <!-- Shayari list grouped by category -->
+  <!-- 📝 Shayari list grouped by category -->
   <ng-container *ngFor="let category of categories">
-    <div *ngIf="groupedShayaris[category]" class="mb-6">
-      <h3 class="text-lg md:text-xl font-bold text-purple-700 mb-2">{{ category }}</h3>
-      <div *ngFor="let shayari of groupedShayaris[category]" class="card bg-base-100 shadow p-4 md:p-5 mb-2 rounded relative">
-        <p class="text-gray-800 text-sm md:text-base">{{ shayari.content }}</p>
-        <small class="absolute bottom-2 right-2 text-gray-500 text-xs md:text-sm">
-          By: {{ shayari.createdBy || 'Anonymous' }} at {{ shayari.createdAt | date:'short' }}
+    <div *ngIf="groupedShayaris[category]" class="mb-8 animate-fadeIn">
+      <h3 class="text-xl font-bold text-purple-700 mb-3 border-b-2 border-purple-300 pb-1">{{ category }}</h3>
+
+      <div *ngFor="let shayari of groupedShayaris[category]"
+        class="bg-white shadow-md rounded-xl p-4 mb-3 border border-purple-100 hover:shadow-lg transition">
+        <p class="text-gray-800 mb-2">{{ shayari.content }}</p>
+        <small class="block text-right text-gray-500 text-xs">
+          By: {{ shayari.createdBy || 'Anonymous' }} <br>
+          <span class="text-gray-400">{{ shayari.createdAt | date:'short' }}</span>
         </small>
       </div>
     </div>
   </ng-container>
 
-  <!-- Add Shayari Modal -->
-  <div *ngIf="showAddPopup" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
-    <div class="bg-white rounded-lg p-6 md:p-8 w-full max-w-md shadow-lg relative">
+  <!-- 💬 Add Shayari Modal -->
+  <div *ngIf="showAddPopup"
+    class="fixed inset-0 bg-black/30 backdrop-blur-sm flex justify-center items-center z-50 animate-fadeIn">
+    <div class="bg-white rounded-2xl p-6 w-11/12 max-w-md relative shadow-2xl border border-purple-200 animate-slideUp">
 
-      <h2 class="text-lg md:text-xl font-bold mb-4 text-center md:text-left">Add Shayari</h2>
+      <h2 class="text-2xl font-bold mb-5 text-purple-700 text-center">Add New Shayari</h2>
 
-      <!-- Reactive Form Wrapper -->
+      <!-- Reactive Form -->
       <form [formGroup]="addForm">
 
         <!-- Category -->
-        <select formControlName="category" class="border p-2 md:p-3 rounded w-full mb-4 text-sm md:text-base">
+        <select formControlName="category"
+          class="border border-purple-300 focus:ring-2 focus:ring-purple-500 outline-none p-2 rounded-lg w-full mb-4">
           <option value="" disabled>Select Category</option>
           <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
         </select>
 
         <!-- Content -->
         <textarea formControlName="content"
-                  class="border p-2 md:p-3 rounded w-full mb-4 text-sm md:text-base resize-none"
-                  placeholder="Write your shayari here" rows="5"></textarea>
+          class="border border-purple-300 focus:ring-2 focus:ring-purple-500 outline-none p-3 rounded-lg w-full mb-4 h-32 resize-none"
+          placeholder="Write your shayari here..."></textarea>
 
         <!-- Buttons -->
-        <div class="flex flex-col md:flex-row justify-end gap-2">
-          <button type="button" class="bg-gray-300 text-gray-700 px-4 py-2 md:px-5 md:py-2 rounded hover:bg-gray-400 transition-colors text-sm md:text-base w-full md:w-auto"
-                  (click)="toggleAddPopup()">Cancel</button>
-          <button type="button" class="bg-purple-500 text-white px-4 py-2 md:px-5 md:py-2 rounded hover:bg-purple-600 transition-colors text-sm md:text-base w-full md:w-auto"
-                  (click)="addShayari()">Add</button>
+        <div class="flex justify-end gap-3">
+          <button type="button"
+            class="bg-gray-300 text-gray-800 font-semibold px-4 py-2 rounded-lg hover:bg-gray-400 transition"
+            (click)="toggleAddPopup()">Cancel</button>
+
+          <!-- ✅ Fixed Add button -->
+          <button type="button"
+            class="!bg-purple-600 text-white font-semibold px-4 py-2 rounded-lg shadow-md focus:outline-none hover:!bg-purple-700 active:!bg-purple-800 transition"
+            (click)="addShayari()">
+            Add
+          </button>
+
+
+
+
         </div>
-
       </form>
-
     </div>
   </div>
 
 </div>
+
+<!-- 🌟 Animations -->
+<style>
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(20px);
+      opacity: 0;
+    }
+
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  .animate-fadeIn {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  .animate-slideUp {
+    animation: slideUp 0.35s ease-in-out;
+  }
+</style>

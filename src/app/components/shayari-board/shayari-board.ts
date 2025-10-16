@@ -1,31 +1,26 @@
 import { Component, OnInit } from '@angular/core';
 import { Shayari, shayariService } from '../../services/shayari';
-import { Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-shayari-board',
   standalone: true,
-  imports: [CommonModule, FormsModule,ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './shayari-board.html',
-  styleUrl: './shayari-board.css'
+  styleUrls: ['./shayari-board.css']
 })
 export class ShayariBoard implements OnInit {
-    usernameInput: string = '';
- shayaris: Shayari[] = [];
+  usernameInput: string = '';
+  shayaris: Shayari[] = [];
   groupedShayaris: { [category: string]: Shayari[] } = {};
   categories: string[] = ['All', 'Love Shayari', 'Motivational Shayari', 'Funny Shayari', 'Sad Shayari'];
   selectedCategory = 'All';
 
-  // Add Shayari popup
   showAddPopup = false;
   addForm: FormGroup;
 
-  // Username cookie
   username: string | null = null;
   showNamePrompt = false;
 
@@ -41,13 +36,11 @@ export class ShayariBoard implements OnInit {
   }
 
   ngOnInit() {
-    // Check username cookie
     this.username = this.cookieService.get('username');
     if (!this.username) {
       this.showNamePrompt = true;
     }
 
-    // Load shayaris from service
     this.shayService.shayaris$.subscribe(data => {
       this.shayaris = data;
       this.groupShayaris();
@@ -64,7 +57,6 @@ export class ShayariBoard implements OnInit {
     }
   }
 
-  // Group shayaris by category
   groupShayaris() {
     this.groupedShayaris = {};
     const filtered = this.selectedCategory === 'All'
@@ -79,18 +71,15 @@ export class ShayariBoard implements OnInit {
     });
   }
 
-  // Change category filter
   filterCategory(category: string) {
     this.selectedCategory = category;
     this.groupShayaris();
   }
 
-  // Toggle Add Shayari popup
   toggleAddPopup() {
     this.showAddPopup = !this.showAddPopup;
   }
 
-  // Add shayari
   addShayari() {
     if (!this.username) {
       alert('Username not set!');
@@ -101,12 +90,23 @@ export class ShayariBoard implements OnInit {
       const newShayari: Shayari = {
         category: this.addForm.value.category,
         content: this.addForm.value.content,
-        createdBy: this.username
+        createdBy: this.username,
+        updatedBy: this.username,
       };
-      this.shayService.addShayari(newShayari);
-      this.addForm.reset();
-      this.showAddPopup = false;
-      alert('Shayari added successfully!');
+
+      // Subscribe here to handle errors
+      this.shayService.addShayari(newShayari).subscribe({
+        next: () => {
+          this.addForm.reset();
+          this.showAddPopup = false;
+          alert('Shayari added successfully!');
+        },
+        error: (err) => {
+          console.error('Error adding shayari:', err);
+          alert('Failed to add shayari. Check console for details.');
+        }
+      });
+
     } else {
       alert('Please fill all fields!');
     }
