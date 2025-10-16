@@ -16,9 +16,14 @@ export class AddShayari {
   content: string = '';
   showSuccess: boolean = false;
 
-  constructor(private shayariService: shayariService, private router: Router) {}
+  constructor(private shayariService: shayariService, private router: Router) {
+    debugger
+  }
 
-  addShayari() {
+  addShayari()
+   {
+
+    debugger
     if (!this.selectedCategory || !this.content.trim()) {
       alert('Please select a category and enter content.');
       return;
